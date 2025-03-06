@@ -4,3 +4,6 @@
 *.xlsx
 *.csv
 *.spec
+/dist
+/build
+**/__pycache__

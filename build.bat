@@ -1,0 +1,1 @@
+'c:/Users/18530/AppData/Local/Programs/Python/Python312/Scripts/pyinstaller.exe' --icon=./static/images/TikTokDownloader.ico --add-data "static:static" --add-data "locale:locale" --add-data "templates:templates" --collect-all emoji main.py

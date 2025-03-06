@@ -1,13 +1,14 @@
 from asyncio import Semaphore
 from asyncio import gather
 from datetime import datetime
+import json
 from pathlib import Path
 from shutil import move
 from time import time
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 from typing import Union
-
+import aiofiles
 from aiofiles import open
 from httpx import HTTPStatusError
 from httpx import RequestError
@@ -187,6 +188,8 @@ class Downloader:
             tiktok=tiktok,
         )
 
+
+
     async def run_music(
             self,
             data: list[dict],
@@ -284,6 +287,7 @@ class Downloader:
                 name,
                 self.folder_mode,
             )
+            await self.save_video_data(root, item)
             params = {
                 "tasks": tasks,
                 "name": name,
@@ -348,6 +352,7 @@ class Downloader:
             self,
             root: Path,
             name: str,
+            data: dict,
             folder_mode=False,
     ) -> tuple[Path, Path]:
         """生成文件的临时路径和目标路径"""
@@ -356,6 +361,16 @@ class Downloader:
         cache = self.cache.joinpath(name)
         actual = root.joinpath(name)
         return cache, actual
+
+    async def save_video_data(self, dir, data: dict):
+        try:
+            file_path = f"{dir}/{data['id']}.json"
+            async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                await f.write(json.dumps(data, indent=4))
+        except Exception as e:
+            self.log.warning(
+                _(f"save video data fail: {e}")
+            )
 
     async def is_downloaded(self, id_: str) -> bool:
         return await self.recorder.has_id(id_)
@@ -765,6 +780,7 @@ class Downloader:
         return folder
 
     def generate_detail_name(self, data: dict) -> str:
+
         """生成作品文件名称"""
         return beautify_string(
             self.cleaner.filter_name(
