@@ -373,6 +373,7 @@ class Downloader:
             )
 
     async def is_downloaded(self, id_: str) -> bool:
+        return False;
         return await self.recorder.has_id(id_)
 
     @staticmethod
