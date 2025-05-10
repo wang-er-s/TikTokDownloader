@@ -17,3 +17,5 @@ __pycache__/
 *.ini
 *.txt
 !.github/workflows/*.yaml
+/dist
+/build
