@@ -23,6 +23,8 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 
+from downloader import save_video_data
+
 from ..custom import DESCRIPTION_LENGTH
 from ..custom import MAX_FILENAME_LENGTH
 from ..custom import MAX_WORKERS
@@ -292,6 +294,7 @@ class Downloader:
                 "temp_root": temp_root,
                 "actual_root": actual_root,
             }
+            await save_video_data(self, root, item)
             if (t := item["type"]) == _("图集"):
                 await self.download_image(
                     **params,
@@ -365,6 +368,7 @@ class Downloader:
         return path.exists()
 
     async def is_skip(self, id_: str, path: Path) -> bool:
+        return self.is_exists(path)
         return await self.is_downloaded(id_) or self.is_exists(path)
 
     async def download_image(
